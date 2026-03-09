@@ -1,114 +1,99 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Created on Mon Mar  9 16:32:18 2026
+
+@author: matheus
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
-Realiza o processa
-
-
+Realiza o processamento
 """
 
 import pandas as pd
 
-# Abre o arquivo .xlsx que contém os dados medidos pelos smart meters.
-arquivo = "/home/matheus/Documentos/Projeto/dados_brutos/smart_meter_data.xlsx"
+# Abre o arquivo 'smart_meter_data.xlsx' que contém os dados dos smart meters.
+# Este arquivo contém 3 abas, sendo uma para cada um dos três alimentadores
+# que constituem a rede teste (Feeder A, Feeder B e Feeder C).
+arquivo = "/home/matheus/Documentos/BtM-PV-estimating/dados_brutos/smart_meter_data.xlsx"
 
-# O arquivo possui 
-# As medições individuais de cada consumidor estão 
-
-# O arquivo possui 4 abas:
-#   - README
-#   - FeederA_Smart Meter Data 
-#   - FeederB_Smart Meter Data
-#   - FeederC_Smart Meter Data
-
-# Cria um dicionário que associa cada planilha (Aba) ao respectivo arquivo
-# de saída. 
+# Cria uma dicionário associando cada Aba ao nome do arquivo de saída correspondente.
 abas = {
     "FeederA_Smart Meter Data": "FeederA_clean.csv",
     "FeederB_Smart Meter Data": "FeederB_clean.csv",
     "FeederC_Smart Meter Data": "FeederC_clean.csv"
 }
 
+# Implementa uma lista para armazenar o resultado das
+# verificações.
+relatorio = []
+
+# Dicionário para armazenar os dataframes processados
+dataframes_processados = {}
 
 for aba, nome_do_arquivo in abas.items():
 
-    # Copia as medições contidas na aba que esta sendo processada
+    # Copia planilha para o dataframe df
     df = pd.read_excel(
         arquivo,
         sheet_name=aba,
-        header=0   # Indica que primeira linha contém os cabeçalhos
+        header=0 
     )
 
-    # Renomeia primeira coluna para "Time"
+    # Renomeia primeira coluna como "Time".
     df.rename(columns={df.columns[0]: "Time"}, inplace=True)
-    #df.rename(columns={df.columns[0]: "Time"})
 
-
-    # Converter dados da coluna Time para datetime
+    # Converte os valores da coluna "Time" para datetime.
     df["Time"] = pd.to_datetime(df["Time"], errors="coerce")
 
-    # Remover linhas com datas inválidas
-    #df = df.dropna(subset=["Time"])
-
-    # Corrigir possíveis milissegundos estranhos
-    #df["Time"] = df["Time"].dt.round("h")
-
-    # Ordenar
-    #df = df.sort_values("Time").reset_index(drop=True)
-
-    # Troca a virgula "," por ponto "." nos valores medidos
+    # Nos valores das medições, substitui a virgula ',' por '.' ponto.
     for col in df.columns[1:]:
-        df[col] = (df[col]
+        df[col] = (
+            df[col]
             .astype(str)
             .str.replace(",", ".", regex=False)
             .astype(float)
         )
 
-    # ==========================
-    # Verificações
-    # ==========================
 
-    print(f"\n{aba}\n")
-    print("Valores NaN: \n")
-    if df.isna().any().any():
-        print("\t A planilha gerada contém células NaN.")
-    else:
-        print("\t Nenhuma célula NaN foi encontrado.")
+    ##############################################
+    ##############################################
     
-    print("\nQuantidade de linhas: ")
-    if len(df) == 8760:
-        print(f"\tOk, a planilha possui {len(df)} linhas (1 ano hora a hora)")
-    else:
-        print(f"\tIncorreto, a planilha está com {len(df)} linhas. Verificar")
+    # Verifica o dataframe
 
-    print("\nDatas duplicadas:")    
+    # Verifica a existencia de valores NaN.
+    possui_nan = df.isna().any().any()
+    # Verifica o número de linhas.
+    linhas = len(df)
+    # Verifica a existência de datas duplicadas.
     duplicados = df["Time"].duplicated().sum()
-    if duplicados == 0:
-        print("\tNão existem datas duplicadas")
-    else:
-        print("\tExistem datas duplicadas na planilha")
-
-    print("\nValores nulos:\n")
+    # Verifica a existência de valores nulos.
     nulos = df.isna().sum().sum()
-    if nulos == 0:
-        print("\tNão existem valores nulos na planilha")
-    else:
-        print("\tExistem valores nulos na planilha")
+
+    # Anexa os resultados das verificações a lista 'relatorio'.
+    relatorio.append({
+        "Planilha": aba,
+        "nº linhas": linhas,
+        "nº linhas = 8760": "OK" if linhas == 8760 else "ERRO",
+        "Datas duplicadas": duplicados,
+        "Valores nulos": nulos,
+        "Possui NaN": "Sim" if possui_nan else "Não"
+    })
 
     # Salvar CSV
-    caminho_do_arquivo = "/home/matheus/Documentos/Projeto/loadshapes" + nome_do_arquivo
+    caminho_do_arquivo = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes" + nome_do_arquivo
     df.to_csv(caminho_do_arquivo, index=False)
-    print("Planilha salva em: /home/matheus/Documentos/Projeto/loadshapes")
+
+    # Guardar dataframe
+    dataframes_processados[aba] = df
 
 
-print("\nProcessamento finalizado.")
+print("\nProcessamento concluído.\n")
 
-# ==========================
-# Teste de leitura final
-# ==========================
+tabela = pd.DataFrame(relatorio)
 
-#for arquivo_csv in ["FeederA_clean.csv", "FeederB_clean.csv", "FeederC_clean.csv"]:
-#    print(f"\nTestando {arquivo_csv}")
-#    df_test = pd.read_csv(arquivo_csv, parse_dates=["Time"])
-#    print(df_test.head())
-#    print(df_test.info())
+print("Verificações:\n")
+print(tabela.to_string(index=False))
