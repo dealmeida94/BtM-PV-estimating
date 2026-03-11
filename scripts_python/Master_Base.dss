@@ -1,0 +1,31 @@
+Clear
+New Circuit.240_bus_test_system
+
+! ------------------ ELEMENTOS DO SISTEMA ------------------
+
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/Vsource.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/SubTransformer.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/RegControl.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/DistriTransformer.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/Linecode.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/Line.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/CircuitBreaker.dss
+
+! ------------------ LOADSHAPES ------------------
+
+Redirect /home/matheus/Documentos/BtM-PV-estimating/loadshapes/Loadshapes_FeederA.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/loadshapes/Loadshapes_FeederA.dss
+Redirect /home/matheus/Documentos/BtM-PV-estimating/loadshapes/Loadshapes_FeederA.dss
+
+! ------------------ CARGAS ------------------
+
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/Load.dss
+
+Redirect /home/matheus/Documentos/BtM-PV-estimating/elementos/Capacitor.dss
+
+! ------------------ BASES DE TENSÃO ------------------
+
+Set VoltageBases = "69.0, 13.8, 0.208"
+CalcVoltageBases
+
+

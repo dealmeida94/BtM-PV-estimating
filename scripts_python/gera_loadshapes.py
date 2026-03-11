@@ -18,113 +18,107 @@ Created on Tue Feb 24 16:50:56 2026
 
 import pandas as pd
 
-# Carrega planilhas com medições por alimentador.
+# Dicionário que associa cada alimentador ao caminho de sua respectiva planilha.
 feeders = {
     "FeederA": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederA_clean.csv",
     "FeederB": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederB_clean.csv",
     "FeederC": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederC_clean.csv"
 }
 
-# Caminho para salvar arquivos
-caminho_do_arquivo = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/"
+# Caminho onde serão salvos os arquivos de saída.
+caminho_dos_loadshapes = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/"
+caminho_dos_multiplicadores = "/home/matheus/Documentos/BtM-PV-estimating/multiplicadores/"
 
 # Parâmetros do Loadshape
-npts = 8760
-interval = 1  # horas
+numero_de_pontos = 8760
+intervalo = 1  # horas
 
 
 for feeder, arquivo in feeders.items():
 
-    # Carregar dados
+    # Carrega planilha.
     df = pd.read_csv(arquivo, parse_dates=["Time"])
 
-    # Lista para armazenar comandos DSS
+    # Cria uma lista vazia para armazenas comandos do openDSS.
     dss_lines = []
 
-    # Lista para registrar buses com carga zero
-    buses_zero = []
+    # Cria uma lista vazia para armazenas possíveis nós (bus) com carga nula.
+    carga_zero = []
 
-    # Número esperado de colunas de carga
+    # Verifica a quantidade de nós (bus) existentes na planilha. 
     n_colunas_carga = len(df.columns) - 1
 
     # Contador de loadshapes criados
     loadshapes_criados = 0
 
-
-    # =============================
-    # LOOP DAS CARGAS
-    # =============================
-
+    # Inicia processo de geração de loadshapes.
     for col in df.columns[1:]:  # ignora coluna Time
 
         serie = df[col]
 
-        # potência base
+        # Estabelece o maior valor de potência da serie histórica
+        # como potência base.
         P_base = serie.max()
 
-        # verificar se carga é zero
+        # Verifica se o nó (bus) não possui carga nula.
         if P_base == 0:
-            buses_zero.append(col)
+            # Adiciona a lista de nós (buses) com carga nula
+            carga_zero.append(col)
             continue
 
-        # normalização
-        mult = serie / P_base
+        # Conversão das potência para PU
+        PU = serie / P_base
 
-        # nome do loadshape
-        nome_ls = f"LS_{col.replace(' ', '')}"
+        # Nomeia o loadshape
+        nome_loadshape = f"Loadshape_{col.replace(' ', '')}" # Elimina o espaço do nome
+                                                     # da coluna
 
-        # arquivo txt dos multiplicadores
-        arquivo_txt = caminho_do_arquivo + f"{nome_ls}.txt"
+        # Arquivo txt dos multiplicadores
+        arquivo_txt = caminho_dos_multiplicadores + f"{feeder}/" + f"{nome_loadshape}.txt"
 
-        # salvar multiplicadores
-        mult.to_csv(arquivo_txt, index=False, header=False)
+        # Salva multiplicadores
+        PU.to_csv(arquivo_txt, index=False, header=False)
 
-        # linha DSS
+        # Cria a linha DSS
         linha_dss = (
-            f"New Loadshape.{nome_ls} "
-            f"npts={npts} interval={interval} "
+            f"New Loadshape.{nome_loadshape} "
+            f"npts={numero_de_pontos} interval={intervalo} "
             f"mult=(file={arquivo_txt})"
         )
 
+        # Adiciona a linha criada na lista de linhas
         dss_lines.append(linha_dss)
 
+        # Incrementa contador
         loadshapes_criados += 1
 
+        # FIM DO LOOP
+        ########################################################################
+        ########################################################################
 
-    # =============================
-    # SALVAR ARQUIVO DSS
-    # =============================
 
-    arquivo_dss = caminho_do_arquivo + f"Loadshapes_{feeder}.dss"
+    # Cria arquivo para salvar loadshape
+    arquivo_dss = caminho_dos_multiplicadores + f"{feeder}/" + f"Loadshape_{feeder}.dss"
 
+    # Escreve as linhas dss no arquivo
     with open(arquivo_dss, "w") as f:
         for linha in dss_lines:
             f.write(linha + "\n")
 
 
-    # =============================
-    # RELATÓRIO FINAL
-    # =============================
+    # Mostra relatório do processo
+    print ("\n###############################################")
+    print (f"\nAlimentador: {feeder}")
+    print(f"\nColunas na planilha original: {n_colunas_carga}")
+    print(f"\nLoadshapes criados: {loadshapes_criados}")
 
-    print(f"\nTotal de colunas de carga: {n_colunas_carga}")
-    print(f"Loadshapes criados: {loadshapes_criados}")
-
-    if buses_zero:
-        print("\n⚠ Buses com carga zero:")
-        for b in buses_zero:
-            print(f" - {b}")
-    else:
-        print("\n✔ Nenhum bus com carga zero encontrado")
-
-    # conferência final
-    if loadshapes_criados + len(buses_zero) == n_colunas_carga:
-        print("\n✔ Conferência OK: todas as colunas foram processadas.")
-    else:
-        print("\n⚠ Inconsistência detectada no processamento.")
-
-    print(f"\nArquivo DSS criado: {arquivo_dss}")
+    if carga_zero:
+        nos=[]
+        for b in carga_zero:
+            nos.append(b)
+        print("\nNós com carga nula:")
+        print(f"\t{nos}")
+        
+    print(f"\nArquivo DSS salvo como: {arquivo_dss}")
 
 
-print("\n=================================")
-print("Loadshapes gerados com sucesso.")
-print("=================================")
