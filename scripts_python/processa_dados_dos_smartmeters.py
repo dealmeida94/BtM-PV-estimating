@@ -10,7 +10,38 @@ Created on Mon Mar  9 16:32:18 2026
 # -*- coding: utf-8 -*-
 
 """
-Realiza o processamento
+    Este script verifica e padroniza os dados de medições reais do sistema de testes disponibilizado em:
+<https://wzy.ece.iastate.edu/Testsystem.html>
+
+    Os dados correspondem a um modelo real de uma rede de distribuição composta por 3 alimentadores,
+aos quais estão conectados 1120 consumidores. Todos os consumidores são equipados com smart meters
+que registram o consumo horário de energia (kWh). O conjunto de dados disponibilizado corresponde a
+1 ano de medições.
+
+    Os alimentadores operam em 13,8 kV, enquanto as cargas estão conectadas no nível secundário de 120/240 V.
+    Para preservar a privacidade dos consumidores, as medições dos smart meters são agregadas no nível secundário
+dos transformadores de distribuição.
+
+    A rede possui um total de 240 nós (transformador + carga). O sistema inclui componentes típicos de redes de
+distribuição, como linhas aéreas, cabos subterrâneos, transformadores de subestação com comutador sob carga (LTC),
+chaves de linha, bancos de capacitores e transformadores de distribuição. Também são fornecidas a topologia 
+real da rede e os parâmetros dos equipamentos.
+
+Referência:
+F. Bu, Y. Yuan, Z. Wang, K. Dehghanpour, and A. Kimber, "A Time-series Distribution Test System based on Real
+Utility Data." 2019 North American Power Symposium (NAPS), Wichita, KS, USA, 2019, pp. 1-6.
+
+=====================================================================================================
+=====================================================================================================
+
+ENTRADA: smart_meter_data.xlsx
+    Planilha com medições dos Smart Meters.
+    
+SAÍDA: "FeederA_clean.csv", "FeederB_clean.csv" e "FeederC_clean.csv"
+    3 planilhas contendo as medições padronizadas e verificadas para cada um dos 3
+    alimentadores que compoem a rede.
+   
+ 
 """
 
 import pandas as pd
@@ -83,11 +114,11 @@ for aba, nome_do_arquivo in abas.items():
         "Possui NaN": "Sim" if possui_nan else "Não"
     })
 
-    # Salvar CSV
-    caminho_do_arquivo = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes" + nome_do_arquivo
+    # Salvar planilhas
+    caminho_do_arquivo = "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/" + nome_do_arquivo
     df.to_csv(caminho_do_arquivo, index=False)
 
-    # Guardar dataframe
+    # Salvar dataframe
     dataframes_processados[aba] = df
 
 
