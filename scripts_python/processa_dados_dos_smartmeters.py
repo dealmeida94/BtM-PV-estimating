@@ -128,3 +128,56 @@ tabela = pd.DataFrame(relatorio)
 
 print("Verificações:\n")
 print(tabela.to_string(index=False))
+
+#%%
+import matplotlib.pyplot as plt
+
+# caminhos dos arquivos
+feeders = {
+    "FeederA": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederA_clean.csv",
+    "FeederB": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederB_clean.csv",
+    "FeederC": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederC_clean.csv"
+}
+
+pot_feeders = {}
+
+# leitura e soma dos buses
+for nome, caminho in feeders.items():
+    
+    df = pd.read_csv(caminho)
+
+    # ignora a primeira coluna (data)
+    potencia = df.iloc[:,1:]
+
+    # soma todos os buses
+    pot_total = potencia.sum(axis=1)
+
+    pot_feeders[nome] = pot_total
+
+
+# soma total dos feeders
+pot_total_rede = sum(pot_feeders.values())
+
+
+# criação dos gráficos
+plt.figure(figsize=(10,12))
+
+for i, (nome, pot) in enumerate(pot_feeders.items(), start=1):
+
+    plt.subplot(4,1,i)
+    plt.plot(pot)
+    plt.title(f"Potência {nome}")
+    plt.ylabel("kW")
+    plt.grid(True)
+
+
+# gráfico total
+plt.subplot(4,1,4)
+plt.plot(pot_total_rede)
+plt.title("Potência Total da Rede")
+plt.ylabel("kW")
+plt.xlabel("Tempo")
+plt.grid(True)
+
+plt.tight_layout()
+plt.show()
