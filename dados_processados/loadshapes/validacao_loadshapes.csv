@@ -1,0 +1,4 @@
+Feeder,n_buses,NaN em P,NaN em Q,Pontos originais,Pontos loadshape P,Pontos loadshape Q,Tamanho OK
+FeederA,17,0,0,8760,8760,8760,OK
+FeederB,60,0,0,8760,8760,8760,OK
+FeederC,162,0,0,8760,8760,8760,OK

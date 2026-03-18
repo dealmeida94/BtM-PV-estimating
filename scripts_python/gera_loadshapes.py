@@ -2,112 +2,157 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+import numpy as np
+import os
 
-# Dicionário que associa cada alimentador ao caminho de sua respectiva planilha.
-feeders = {
-    "FeederA": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederA_clean.csv",
-    "FeederB": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederB_clean.csv",
-    "FeederC": "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/FeederC_clean.csv"
-}
+# ============================================================
+# CAMINHOS
+# ============================================================
 
-# Caminho onde serão salvos os arquivos de saída.
-caminho_dos_loadshapes = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/"
-caminho_dos_multiplicadores = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/"
+base_path = "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/"
+saida_path = base_path + "loadshapes_por_bus/"
 
-# Parâmetros do Loadshape
-numero_de_pontos = 8760
-intervalo = 1  # horas
+os.makedirs(saida_path, exist_ok=True)
 
+feeders = ["FeederA", "FeederB", "FeederC"]
 
-for feeder, arquivo in feeders.items():
+# ============================================================
+# RELATÓRIOS
+# ============================================================
 
-    # Carrega planilha
-    df = pd.read_csv(arquivo, parse_dates=["Time"])
+relatorio_base = []
+relatorio_validacao = []
 
-    # Lista de comandos DSS
-    dss_lines = []
+# ============================================================
+# PROCESSAMENTO
+# ============================================================
 
-    # Lista de buses com carga zero
-    carga_zero = []
+for feeder in feeders:
 
-    # Lista para salvar Pbase
-    bases = []
+    print(f"\n==============================")
+    print(f"Processando {feeder}")
+    print(f"==============================")
 
-    # Número de colunas de carga
-    n_colunas_carga = len(df.columns) - 1
+    df_P = pd.read_csv(base_path + f"{feeder}_P.csv")
+    df_Q = pd.read_csv(base_path + f"{feeder}_Q.csv")
 
-    # Contador
-    loadshapes_criados = 0
+    # ----------------------------------
+    # COLUNAS = BUSES
+    # ----------------------------------
 
-    # Loop pelas cargas
-    for col in df.columns[1:]:
+    colunas = [c for c in df_P.columns if c != "Time"]
 
-        serie = df[col]
+    n_original = len(df_P)
 
-        # Potência base
-        P_base = serie.max()
+    print(f"Total de buses: {len(colunas)}")
+    print(f"Pontos na série: {n_original}")
 
-        if P_base == 0:
-            carga_zero.append(col)
+    # ----------------------------------
+    # LOOP POR BUS
+    # ----------------------------------
+
+    for bus in colunas:
+
+        # ----------------------------------
+        # SÉRIES
+        # ----------------------------------
+
+        P = pd.to_numeric(df_P[bus], errors="coerce")
+        Q = pd.to_numeric(df_Q[bus], errors="coerce")
+
+        # ----------------------------------
+        # VERIFICAÇÕES
+        # ----------------------------------
+
+        nulos_P = P.isna().sum()
+        nulos_Q = Q.isna().sum()
+
+        if nulos_P > 0 or nulos_Q > 0:
+            print(f"⚠️ {feeder} - {bus}: NaNs → P={nulos_P}, Q={nulos_Q}")
+
+        # ----------------------------------
+        # POTÊNCIA BASE
+        # ----------------------------------
+
+        P_base = P.max()
+        Q_base = Q.max()
+
+        # evita problemas
+        if P_base == 0 or np.isnan(P_base):
+            print(f"❌ {feeder} - {bus}: P_base inválido")
             continue
 
-        # Salva Pbase
-        bases.append({
-            "bus": col.replace(' ', ''),
-            "Pbase_kW": P_base
+        if Q_base == 0 or np.isnan(Q_base):
+            print(f"❌ {feeder} - {bus}: Q_base inválido")
+            continue
+
+        # ----------------------------------
+        # NORMALIZAÇÃO (PU)
+        # ----------------------------------
+
+        P_pu = P / P_base
+        Q_pu = Q / Q_base
+
+        # ----------------------------------
+        # SALVAR LOADSHAPE (FORMATO TXT)
+        # ----------------------------------
+
+        nome_bus = bus.replace(" ", "_")
+
+        caminho_P = saida_path + f"{feeder}_{nome_bus}_P.txt"
+        caminho_Q = saida_path + f"{feeder}_{nome_bus}_Q.txt"
+
+        np.savetxt(caminho_P, P_pu, fmt="%.6f")
+        np.savetxt(caminho_Q, Q_pu, fmt="%.6f")
+
+        # ----------------------------------
+        # VALIDAÇÃO TAMANHO
+        # ----------------------------------
+
+        n_ls = len(P_pu)
+        tamanho_ok = "OK" if n_ls == n_original else "ERRO"
+
+        # ----------------------------------
+        # RELATÓRIOS
+        # ----------------------------------
+
+        relatorio_base.append({
+            "Feeder": feeder,
+            "Bus": bus,
+            "P_base (kW)": P_base,
+            "Q_base (kvar)": Q_base
         })
 
-        # Conversão para PU
-        PU = serie / P_base
+        relatorio_validacao.append({
+            "Feeder": feeder,
+            "Bus": bus,
+            "NaN_P": nulos_P,
+            "NaN_Q": nulos_Q,
+            "Pontos": n_ls,
+            "Esperado": n_original,
+            "Tamanho OK": tamanho_ok
+        })
 
-        # Nome do loadshape
-        nome_loadshape = f"Loadshape_{col.replace(' ', '')}"
+# ============================================================
+# SALVAR RELATÓRIOS
+# ============================================================
 
-        # Arquivo txt
-        arquivo_txt = caminho_dos_multiplicadores + f"{feeder}/" + f"{nome_loadshape}.txt"
+df_base = pd.DataFrame(relatorio_base)
+df_validacao = pd.DataFrame(relatorio_validacao)
 
-        # Salva multiplicadores
-        PU.to_csv(arquivo_txt, index=False, header=False)
+df_base.to_csv(saida_path + "potencias_base_por_bus.csv", index=False)
+df_validacao.to_csv(saida_path + "validacao_por_bus.csv", index=False)
 
-        # Linha DSS
-        linha_dss = (
-            f"New Loadshape.{nome_loadshape} "
-            f"npts={numero_de_pontos} interval={intervalo} "
-            f"mult=(file={arquivo_txt})"
-        )
+# ============================================================
+# FINAL
+# ============================================================
 
-        dss_lines.append(linha_dss)
+print("\n====================================")
+print("PROCESSO FINALIZADO")
+print("====================================")
 
-        loadshapes_criados += 1
+print("\nResumo potências base:")
+print(df_base.head())
 
-    ########################################################################
-
-    # Salva arquivo DSS
-    arquivo_dss = caminho_dos_multiplicadores + f"{feeder}/" + f"Loadshape_{feeder}.dss"
-
-    with open(arquivo_dss, "w") as f:
-        for linha in dss_lines:
-            f.write(linha + "\n")
-
-    ########################################################################
-    # Salva arquivo de potências base
-
-    df_bases = pd.DataFrame(bases)
-
-    arquivo_bases = caminho_dos_multiplicadores + f"{feeder}/" + f"Pbase_{feeder}.csv"
-
-    df_bases.to_csv(arquivo_bases, index=False)
-
-    ########################################################################
-
-    print("\n###############################################")
-    print(f"\nAlimentador: {feeder}")
-    print(f"\nColunas na planilha original: {n_colunas_carga}")
-    print(f"\nLoadshapes criados: {loadshapes_criados}")
-
-    if carga_zero:
-        print("\nNós com carga nula:")
-        print(f"\t{carga_zero}")
-
-    print(f"\nArquivo DSS salvo como: {arquivo_dss}")
-    print(f"\nArquivo de potências base salvo como: {arquivo_bases}")
+print("\nResumo validação:")
+print(df_validacao.head())
