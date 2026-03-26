@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
 """
     Este script verifica e padroniza os dados de medições reais do sistema de testes disponibilizado em:
     <https://wzy.ece.iastate.edu/Testsystem.html>
@@ -43,6 +39,10 @@ DADOS DE SAÍDA:
     + gráficos
           
 """
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 ###############################################################################################################
 ###############################################################################################################
