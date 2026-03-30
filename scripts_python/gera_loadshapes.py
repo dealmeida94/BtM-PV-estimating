@@ -106,6 +106,7 @@ def processar_feeder(feeder):
         
         linhas_dss.append(linha_P)
         linhas_dss.append(linha_Q)
+        df_base.loc[len(df_base)] = [bus, P_base, Q_base]
     
         
     # Salva arquivo       
@@ -120,7 +121,6 @@ def processar_feeder(feeder):
             f.write(linha + "\n")
 
     # 7. Salva valores de base
-    df_base.loc[len(df_base)] = [bus, P_base, Q_base]
     caminho_base = local_saida + f"Bases_{feeder}.csv"
     df_base.to_csv(caminho_base, index=False)
 

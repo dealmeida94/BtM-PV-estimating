@@ -1,14 +1,10 @@
 import pandas as pd
 import re
-from pathlib import Path
 
-# -------------------------------
-# CONFIG
-# -------------------------------
-pasta_dados = "C:/Users/User/Documents/GitHub/BtM-PV-estimating/loadshapes/"
+
+pasta_dados = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/"
 feeders = ["A", "B", "C"]
-
-pasta_saida = "C:/Users/User/Documents/GitHub/BtM-PV-estimating/dados_processados/"
+pasta_saida = "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/"
 
 
 # -------------------------------
@@ -20,99 +16,147 @@ def extrair_loadshapes(caminho_dss):
     with open(caminho_dss, "r") as f:
         for linha in f:
             linha = linha.strip()
-    
+
             if linha.lower().startswith("new loadshape"):
-    
-                # 🔥 pega nome completo (mesmo com espaço)
+
                 match = re.search(r"Loadshape\.(.*?)\s+npts", linha, re.IGNORECASE)
-                
+
                 if not match:
                     print(f"⚠️ erro ao ler linha: {linha}")
                     continue
-    
+
                 nome = match.group(1)
-                print(nome)
+
                 # extrai número do bus
                 bus_match = re.search(r"Bus\s*(\d+)", nome, re.IGNORECASE)
-                print(bus_match)
-    
+
                 if not bus_match:
                     print(f"⚠️ sem bus: {nome}")
                     continue
-    
+
                 numero_bus = bus_match.group(1)
-                bus_formatado = f"Bus {numero_bus}"
-    
-                # 🔥 separa P e Q
+                chave_bus = f"Bus {numero_bus}"
+
+                # identifica P ou Q
                 if "_P" in nome:
                     tipo = "P"
                 elif "_Q" in nome:
                     tipo = "Q"
                 else:
                     tipo = "?"
-    
-                # cria estrutura organizada
-                if bus_formatado not in loadshapes:
-                    loadshapes[bus_formatado] = {}
-    
-                loadshapes[bus_formatado][tipo] = nome
-    
-               
-    
-        return loadshapes
+
+                if chave_bus not in loadshapes:
+                    loadshapes[chave_bus] = {}
+
+                loadshapes[chave_bus][tipo] = nome
+
+    return loadshapes
 
 
 # -------------------------------
 # PROCESSAMENTO
 # -------------------------------
+  # ========================================================
+  # CAMINHOS
+  # ========================================================
+#arquivo_dss = pasta_dados + f"Loadshapes_Feeder{feeder}.dss"
+#arquivo_config = "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/configuracao_buses.xlsx"
+#arquivo_bases = pasta_dados + f"Bases_Feeder{feeder}.csv"
+#df_config = pd.read_excel(arquivo_config)
 for feeder in feeders:
-    print(f"\n🔄 Processando Feeder {feeder}")
 
+    #print(f"\n🔄 Processando Feeder {feeder}")
+    arquivo_config = "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/configuracao_buses.xlsx"
+    arquivo_bases = pasta_dados + f"Bases_Feeder{feeder}.csv"
     arquivo_dss = pasta_dados + f"Loadshapes_Feeder{feeder}.dss"
-    arquivo_csv = pasta_dados + f"Bases_Feeder{feeder}.csv"
+    df_config = pd.read_excel(arquivo_config, sheet_name=f"Feeder_{feeder}")
+    # ========================================================
+    # 1. LEITURA DOS DADOS
+    # ========================================================
+    
+    df_config.columns = [c.lower() for c in df_config.columns]
 
-    # 1. Ler dados
-    df = pd.read_csv(arquivo_csv)
+    df_base = pd.read_csv(arquivo_bases)
+    df_base.columns = [c.lower() for c in df_base.columns]
 
-    # padroniza nomes
-    df.columns = [c.lower() for c in df.columns]
-
-    # 2. Extrair loadshapes
+    # padroniza BUS → só número
+    df_base = pd.read_csv(arquivo_bases)
+    df_base.columns = [c.lower() for c in df_base.columns]
+    
+    df_base["bus"] = (
+        df_base["bus"]
+        .astype(str)
+        .str.extract(r"(\d+)")[0]
+        .str.lstrip("0")
+    )
+#%%
+    # ========================================================
+    # 2. LOADSHAPES
+    # ========================================================
     loadshapes = extrair_loadshapes(arquivo_dss)
 
     if not loadshapes:
         raise ValueError(f"❌ Nenhum loadshape encontrado no feeder {feeder}")
 
     linhas_saida = []
-    faltantes = []
+    faltantes_ls = []
+    faltantes_base = []
 
-    # 3. Percorrer bases
-    for _, row in df.iterrows():
+    kv = 0.208
+
+    # ========================================================
+    # 3. LOOP NOS LOADS
+    # ========================================================
+    for _, row in df_config.iterrows():
+
         load = str(row["load"])
-        bus = row["bus"]
-        kv = row["kv"]
-        kw = row["kw"]
-        kvar = row["kvar"]
+        bus = str(row["bus1"])
         phases = int(row.get("phases", 3))
+        conn = row.get("conn", "wye")
 
-        # extrai ID numérico do load
+        # extrai número do load
         match = re.search(r"(\d+)", load)
         if not match:
             continue
 
         load_id = match.group(1)
-
-        # 4. Verificar se existe loadshape correspondente
-        if load_id not in loadshapes:
-            faltantes.append(load)
+        chave_bus = f"Bus {load_id}"
+#%%
+        # ====================================================
+        # 4. LOADSHAPE
+        # ====================================================
+        if chave_bus not in loadshapes:
+            faltantes_ls.append(load)
             continue
 
-        nome_ls = loadshapes[load_id]
+        # usa P (ou pode adaptar para Q depois)
+        nome_ls = loadshapes[chave_bus].get("P")
 
-        # 5. Montar linha DSS
+        if nome_ls is None:
+            faltantes_ls.append(load)
+            continue
+
+        # ====================================================
+        # 5. BASE
+        # ====================================================
+        base_row = df_base[df_base["bus"] == load_id]
+        print (f"df_base : {df_base["bus"]}")
+        print (load_id)
+
+        if base_row.empty:
+            faltantes_base.append(load)
+            print(base_row)
+            continue
+
+        kw = float(base_row["p_base"].values[0])
+        kvar = float(base_row["q_base"].values[0])
+
+        # ====================================================
+        # 6. LINHA DSS
+        # ====================================================
         linha = (
             f"New Load.{load} "
-            f"phases={phases} conn=wye "
+            f"phases={phases} conn={conn} "
             f"bus1={bus} "
             f"kV={kv} "
             f"kW={kw:.3f} kvar={kvar:.3f} "
@@ -121,14 +165,26 @@ for feeder in feeders:
 
         linhas_saida.append(linha)
 
-    # 6. Aviso de inconsistências
-    if faltantes:
-        print(f"⚠️ Loads sem loadshape ({len(faltantes)}):")
-        for f in faltantes[:10]:
-            print("   ", f)
-
-    # 7. Salvar arquivo
-    arquivo_saida = pasta_saida / f"Loads_Feeder{feeder}.dss"
+        # ========================================================
+        # 7. LOGS
+        # ========================================================
+        if faltantes_ls:
+            print(f"⚠️ Sem loadshape ({len(faltantes_ls)}):")
+            for f in faltantes_ls[:10]:
+                print("   ", f)
+    
+        if faltantes_base:
+            print(f"⚠️ Sem base ({len(faltantes_base)}):")
+            for f in faltantes_base[:10]:
+                print("   ", f)
+    
+        print(f"DEBUG -> load: {load} | id: {load_id} | chave: {chave_bus}")
+        print(f"Total loadshapes: {len(loadshapes)}")
+        print(f"Exemplo keys: {list(loadshapes.keys())[:5]}")
+    # ========================================================
+    # 8. SALVAR
+    # ========================================================
+    arquivo_saida = pasta_saida + f"Loads_Feeder{feeder}.dss"
 
     with open(arquivo_saida, "w") as f:
         f.write("\n".join(linhas_saida))
