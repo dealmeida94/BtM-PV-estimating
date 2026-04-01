@@ -1,62 +1,67 @@
+
+'''
+    Importa as configurações salvas na planilha "configuracao_buses.xlsx" e os valores de base de cada Feeder
+salvos nas planilhas "Bases_FeederA.csv", "Bases_FeederB.csv" e "Bases_FeederC.csv".
+    Verifica possíveis inconsistências e gera um arquivo Load.dss
+    
+    
+'''
+
 import pandas as pd
 import re
 
-
-pasta_dados = "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/"
-feeders = ["A", "B", "C"]
+#Determinação dos caminhos
+pasta_projeto = "/home/matheus/Documentos/BtM-PV-estimating/"
 pasta_saida = "/home/matheus/Documentos/BtM-PV-estimating/dados_processados/"
 
-
-# -------------------------------
-# FUNÇÃO: extrair loadshapes do DSS
-# -------------------------------
+# FUNÇÃO PARA EXTRAIR LOADSHAPES DO ARQUIVO loadshapes.dss
 def extrair_loadshapes(caminho_dss):
     loadshapes = {}
-
     with open(caminho_dss, "r") as f:
         for linha in f:
             linha = linha.strip()
-
+            
+            # Identifica as linhas que iniciam com "new loadshape"
             if linha.lower().startswith("new loadshape"):
-
-                match = re.search(r"Loadshape\.(.*?)\s+npts", linha, re.IGNORECASE)
-
-                if not match:
-                    print(f"⚠️ erro ao ler linha: {linha}")
+                
+                # Verifica nome da carga
+                padrao_load = re.search(r"Loadshape\.(.*?)\s+npts", linha, re.IGNORECASE)
+                if not padrao_load: # se padrão retornar nulo
+                    print(f"Nao foi encontrado Loadshape na linha: \n{linha}")
                     continue
-
-                nome = match.group(1)
-
-                # extrai número do bus
-                bus_match = re.search(r"Bus\s*(\d+)", nome, re.IGNORECASE)
-
-                if not bus_match:
-                    print(f"⚠️ sem bus: {nome}")
-                    continue
-
-                numero_bus = bus_match.group(1)
-                chave_bus = f"Bus {numero_bus}"
-
-                # identifica P ou Q
-                if "_P" in nome:
+                nome_load = padrao_load.group(1)
+                
+                # identifica se loadshape é de potência tiva ou reativa
+                if "_P" in nome_load:
                     tipo = "P"
-                elif "_Q" in nome:
+                elif "_Q" in nome_load:
                     tipo = "Q"
                 else:
                     tipo = "?"
 
-                if chave_bus not in loadshapes:
-                    loadshapes[chave_bus] = {}
+                # Verifica numero do bus
+                padrao_bus = re.search(r"Bus\s*(\d+)", nome_load, re.IGNORECASE)
+                if not padrao_bus:
+                    print(f"Não foi encontrado o bus na linha: \n{nome_load}")
+                    continue
+                numero_bus = padrao_bus.group(1)
+                chave_bus = f"Bus {numero_bus}"
 
-                loadshapes[chave_bus][tipo] = nome
+                loadshapes[chave_bus][tipo] = nome_load
 
     return loadshapes
+
+
+
+
 
 
 # -------------------------------
 # PROCESSAMENTO
 # -------------------------------
   # ========================================================
+
+feeders = ["A", "B", "C"]
   # CAMINHOS
   # ========================================================
 #arquivo_dss = pasta_dados + f"Loadshapes_Feeder{feeder}.dss"
