@@ -1,0 +1,16 @@
+! Arquivo Load - Feeder A
+New Load.Load_1003 phases=3 conn=wye bus1=T_bus1003_L.1.2.3.0 kV=0.208 kW=70.379 kvar=33.251 daily=Load_Bus 1003_P qmult=Load_Bus 1003_Q model=1
+New Load.Load_1004 phases=3 conn=wye bus1=T_bus1004_L.1.2.3.0 kV=0.208 kW=41.534 kvar=18.039 daily=Load_Bus 1004_P qmult=Load_Bus 1004_Q model=1
+New Load.Load_1005 phases=3 conn=wye bus1=T_bus1005_L.1.2.3.0 kV=0.208 kW=53.923 kvar=24.791 daily=Load_Bus 1005_P qmult=Load_Bus 1005_Q model=1
+New Load.Load_1006 phases=1 conn=delta bus1=T_bus1006_L.1.2 kV=0.208 kW=37.880 kvar=17.368 daily=Load_Bus 1006_P qmult=Load_Bus 1006_Q model=1
+New Load.Load_1007 phases=1 conn=delta bus1=T_bus1007_L.1.2 kV=0.208 kW=14.500 kvar=6.606 daily=Load_Bus 1007_P qmult=Load_Bus 1007_Q model=1
+New Load.Load_1008 phases=3 conn=wye bus1=T_bus1008_L.1.2.3.0 kV=0.208 kW=37.461 kvar=14.715 daily=Load_Bus 1008_P qmult=Load_Bus 1008_Q model=1
+New Load.Load_1009 phases=3 conn=wye bus1=T_bus1009_L.1.2.3.0 kV=0.208 kW=51.674 kvar=22.866 daily=Load_Bus 1009_P qmult=Load_Bus 1009_Q model=1
+New Load.Load_1010 phases=3 conn=wye bus1=T_bus1010_L.1.2.3.0 kV=0.208 kW=22.550 kvar=8.389 daily=Load_Bus 1010_P qmult=Load_Bus 1010_Q model=1
+New Load.Load_1011 phases=2 conn=wye bus1=T_bus1011_L.1.2 kV=0.208 kW=16.471 kvar=6.434 daily=Load_Bus 1011_P qmult=Load_Bus 1011_Q model=1
+New Load.Load_1012 phases=2 conn=wye bus1=T_bus1012_L.1.2 kV=0.208 kW=18.268 kvar=8.848 daily=Load_Bus 1012_P qmult=Load_Bus 1012_Q model=1
+New Load.Load_1013 phases=3 conn=wye bus1=T_bus1013_L.1.2.3.0 kV=0.208 kW=19.602 kvar=8.350 daily=Load_Bus 1013_P qmult=Load_Bus 1013_Q model=1
+New Load.Load_1014 phases=2 conn=wye bus1=T_bus1014_L.1.2 kV=0.208 kW=5.429 kvar=2.078 daily=Load_Bus 1014_P qmult=Load_Bus 1014_Q model=1
+New Load.Load_1015 phases=2 conn=wye bus1=T_bus1015_L.1.2 kV=0.208 kW=7.510 kvar=3.607 daily=Load_Bus 1015_P qmult=Load_Bus 1015_Q model=1
+New Load.Load_1016 phases=2 conn=wye bus1=T_bus1016_L.1.2 kV=0.208 kW=18.268 kvar=7.814 daily=Load_Bus 1016_P qmult=Load_Bus 1016_Q model=1
+New Load.Load_1017 phases=2 conn=wye bus1=T_bus1017_L.1.2 kV=0.208 kW=17.185 kvar=7.258 daily=Load_Bus 1017_P qmult=Load_Bus 1017_Q model=1

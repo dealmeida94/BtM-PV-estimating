@@ -1,0 +1,30 @@
+! ==============================
+! MASTER GERADO AUTOMATICAMENTE
+! ==============================
+
+! ==============================
+! ELEMENTOS DA REDE
+! ==============================
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/Buscoords.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/CircuitBreaker.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/DistriTransformer.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/Line.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/Linecode.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/RegControl.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/SubTransformer.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/elementos_da_rede/Vsource.dss"
+
+! ==============================
+! LOADSHAPES
+! ==============================
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/Loadshapes_FeederA.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/Loadshapes_FeederB.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loadshapes/Loadshapes_FeederC.dss"
+
+! ==============================
+! LOADS
+! ==============================
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loads/Capacitor.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loads/Loads_FeederA.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loads/Loads_FeederB.dss"
+Redirect "/home/matheus/Documentos/BtM-PV-estimating/loads/Loads_FeederC.dss"
