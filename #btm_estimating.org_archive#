@@ -1,0 +1,65 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file c:/Users/User/Documents/GitHub/BtM-PV-estimating/btm_estimating.org
+
+
+* Estrutura programa
+:
+PROPERTIES:
+:ARCHIVE_TIME: 2026-04-01 qua 13:33
+:ARCHIVE_FILE: c:/Users/User/Documents/GitHub/BtM-PV-estimating/btm_estimating.org
+:ARCHIVE_CATEGORY: btm_estimating
+:END:
+#+begin_src text
+
+  BtM-PV-estimating
+  │
+  ├── dados_brutos
+  │            └── Calculated Nodal P&Q.xlsx
+  │            └── Load_original.dss
+  │
+  ├── dados_processados
+  │            └── dados_processados.xlsx
+  │            └── configuracao_buses.xlsx
+  │
+  ├── elementos_da_rede
+  │            └── Buscoords.dss
+  │            └── Capacitor.dss
+  │            └── CircuitBreaker.dss
+  │            └── DistriTransformer.dss
+  │            └── Line.dss
+  │            └── Linecode.dss
+  │            └── Load.dss
+  │            └── Master.dss
+  │            └── RegControl.dss
+  │            └── SubTransformer.dss
+  │            └── Vsource.dss
+  │
+  ├── resultados
+  │            └── FeederA_FP.png
+  │            └── FeederA_FP_dia_???.png    (plotagem de dia específico)
+  │            └── FeederA_P_Q.png
+  │            └── FeederA_P_Q_dia_???.png   (plotagem de dia específico)
+  │            └── FeederB_FP.png
+  │            └── FeederB_FP_dia_???.png    (plotagem de dia específico)
+  │            └── FeederB_P_Q.png
+  │            └── FeederB_P_Q_dia_???.png   (plotagem de dia específico)
+  │            └── FeederC_FP.png
+  │            └── FeederC_FP_dia_???.png    (plotagem de dia específico)
+  │            └── FeederC_P_Q.png
+  │            └── FeederC_P_Q_dia_???.png   (plotagem de dia específico)
+  │            └── Subestacao_FP.png
+  │            └── Subestacao_FP_dia_???.png (plotagem de dia específico)
+  │            └── Subestacao_P_Q.png
+  │            └── Subestacao_???.png        (plotagem de dia específico) 
+  │
+  ├── scripts_python
+  │            └── processa_dados_brutos_dos_smartmeters.py
+  │
+  └── README.md
+
+  
+#+end_src
+
+

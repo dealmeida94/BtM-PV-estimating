@@ -1,0 +1,73 @@
+#+TITLE: BtM-PV-estimating
+#+AUTHOR: Matheus Reis de Almeida
+
+
+* Estrutura programa
+#+begin_src text
+
+  BtM-PV-estimating
+  │
+  ├── dados_brutos
+  │            └── Calculated Nodal P&Q.xlsx
+  │            └── Load_original.dss
+  │
+  ├── dados_processados
+  │            └── dados_processados.xlsx
+  │
+  ├── elementos_da_rede
+  │            └── Buscoords.dss
+  │            └── Capacitor.dss
+  │            └── CircuitBreaker.dss
+  │            └── DistriTransformer.dss
+  │            └── Line.dss
+  │            └── Linecode.dss
+  │            └── Load.dss
+  │            └── Master.dss
+  │            └── RegControl.dss
+  │            └── SubTransformer.dss
+  │            └── Vsource.dss
+  │
+  ├── resultados
+  │            └── FeederA_FP.png
+  │            └── FeederA_FP_dia_???.png    (plotagem de dia específico)
+  │            └── FeederA_P_Q.png
+  │            └── FeederA_P_Q_dia_???.png   (plotagem de dia específico)
+  │            └── FeederB_FP.png
+  │            └── FeederB_FP_dia_???.png    (plotagem de dia específico)
+  │            └── FeederB_P_Q.png
+  │            └── FeederB_P_Q_dia_???.png   (plotagem de dia específico)
+  │            └── FeederC_FP.png
+  │            └── FeederC_FP_dia_???.png    (plotagem de dia específico)
+  │            └── FeederC_P_Q.png
+  │            └── FeederC_P_Q_dia_???.png   (plotagem de dia específico)
+  │            └── Subestacao_FP.png
+  │            └── Subestacao_FP_dia_???.png (plotagem de dia específico)
+  │            └── Subestacao_P_Q.png
+  │            └── Subestacao_???.png        (plotagem de dia específico) 
+  │
+  ├── scripts_python
+  │            └── processa_dados_brutos_dos_smartmeters.py
+  │
+  └── README.md
+
+  
+#+end_src
+
+
+* Fluxo do projeto
+
+dados brutos ---> script: processa_dados_brutos ---> dados_processados.xlsx
+
+
+* Detalhamento dos Scripts
+
+** =processa_dados_brutos_dos_smartmeters.py=
+
+*** 18-03-2026 
+Adicionado no cabeçalho do programa uma ampla descrição sobre o que faz o script, as referências e o link dos dados.
+
+*** 24-03-2026
+Concluída a revisão do script.
+Feito push no Github.
+Feito push novamente para ajustar erro no f-string das linhas 241 e 251.
+Feito push novamente para ajustar o nome das figuras nas linhas 241 e 251.
