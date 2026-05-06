@@ -1,0 +1,24 @@
+		Verificando dataframe do FeederA
+		Todos possuem o mesmo número de linhas? sim
+		Todos possuem o mesmo número de colunas? sim
+		Os cabeçalhos são iguais? sim
+		As datas são iguais? sim
+		O df_P possui NaN? não
+		O df_FP possui NaN? não
+
+		Verificando dataframe do FeederB
+		Todos possuem o mesmo número de linhas? sim
+		Todos possuem o mesmo número de colunas? sim
+		Os cabeçalhos são iguais? sim
+		As datas são iguais? sim
+		O df_P possui NaN? não
+		O df_FP possui NaN? não
+
+		Verificando dataframe do FeederC
+		Todos possuem o mesmo número de linhas? sim
+		Todos possuem o mesmo número de colunas? sim
+		Os cabeçalhos são iguais? sim
+		As datas são iguais? sim
+		O df_P possui NaN? não
+		O df_FP possui NaN? não
+

@@ -1,0 +1,10 @@
+
+New Loadshape.PVShape
+~ npts=8760
+~ interval=1
+~ mult=(file=/home/matheus/Documentos/BtM-PV-estimating/scripts/loadshapes/pv_mult.txt)
+
+New Tshape.TempShape
+~ npts=8760
+~ interval=1
+~ temp=(file=/home/matheus/Documentos/BtM-PV-estimating/scripts/loadshapes/temp_mult.txt)
