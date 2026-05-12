@@ -1,40 +1,84 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Thu Apr  9 11:32:44 2026
+Arquivo que define os caminhos e nomes dos arquivos de entrada e saída.
+
+Seu objetivo é centralizar essas configurações, tornando muito mais fácil
+alterar essas informações posteriormente.
 
 @author: matheus
 """
 
 from pathlib import Path
 
-# Pasta base (raiz)
-BASE_DIR = Path(__file__).resolve().parent
+# Verifica a pasta raiz do projeto
+RAIZ_DIR = Path(__file__).resolve().parent
 
-# Dados
-DADOS_DIR = BASE_DIR / "dados"
-EXTERNOS_DIR = DADOS_DIR / "externos"
-WANG_DIR = EXTERNOS_DIR / "zhaoyu_wang"
-PROCESSADOS_DIR = DADOS_DIR / "processados"
-NODAL_PeQ = PROCESSADOS_DIR / "Nodal_P&Q_processado.xlsx"
-LOAD_ORG = WANG_DIR / "dss_originais"
+# DADOS EXTERNOS
+EXT_DIR = RAIZ_DIR / "dados" / "externos"
+NODAL_PQ = EXT_DIR / "Calculated Nodal P&Q.xlsx"
+CLIMA = EXT_DIR / "estacao_INMET_A853_cruz_alta.csv"
+LOAD_DSS_ORIGINAL = EXT_DIR / "Load_Original.dss"
+MASTER_DSS_ORGINAL = EXT_DIR / "Master_Original.dss"
+
+# RELATÓRIOS
+LOGS_DIR = RAIZ_DIR / "logs"
+LOG_NODAL_PQ_txt = LOGS_DIR / "log_processamento_Nodal_PQ.txt"
+LOG_GERA_LS = LOGS_DIR / "log_gera_loadshapes"
+
+# FIGURAS
+FIGS_DIR = RAIZ_DIR / "figuras"
+# Etapa de preprocessamento
+FIGS_PREPROC_DIR = FIGS_DIR / "pre-processamento"
+
+SUB_PQ_TOTAL = FIGS_PREPROC_DIR / "potencia_total_subestacao.png"
+SUB_FP_TOTAL = FIGS_PREPROC_DIR / "FP_total_subestacao.png"
+
+FEEDER_A_PQ_TOTAL = FIGS_PREPROC_DIR / "potencia_total_FeederA.png"
+FEEDER_B_PQ_TOTAL = FIGS_PREPROC_DIR / "potencia_total_FeederB.png"
+FEEDER_C_PQ_TOTAL = FIGS_PREPROC_DIR / "potencia_total_FeederC.png"
+FEEDER_A_FP_TOTAL = FIGS_PREPROC_DIR / "FP_total_FeederA.png"
+FEEDER_B_FP_TOTAL = FIGS_PREPROC_DIR / "FP_total_FeederB.png"
+FEEDER_C_FP_TOTAL = FIGS_PREPROC_DIR / "FP_total_FeederC.png"
+
+SUB_PQ_1DIA = FIGS_PREPROC_DIR / "potencia_1DIA_subestacao.png"
+SUB_FP_1DIA = FIGS_PREPROC_DIR / "FP_1DIA_subestacao.png"
+
+FEEDER_A_PQ_1DIA = FIGS_PREPROC_DIR / "potencia_1DIA_FeederA.png"
+FEEDER_B_PQ_1DIA = FIGS_PREPROC_DIR / "potencia_1DIA_FeederB.png"
+FEEDER_C_PQ_1DIA = FIGS_PREPROC_DIR / "potencia_1DIA_FeederC.png"
+FEEDER_A_FP_1DIA = FIGS_PREPROC_DIR / "FP_1DIA_FeederA.png"
+FEEDER_B_FP_1DIA = FIGS_PREPROC_DIR / "FP_1DIA_FeederB.png"
+FEEDER_C_FP_1DIA = FIGS_PREPROC_DIR / "FP_1DIA_FeederC.png"
+
+FEEDERS_PQ_PATH = {
+    "FeederA" : FEEDER_A_PQ_TOTAL,
+    "FeederB" : FEEDER_B_PQ_TOTAL,
+    "FeederC" : FEEDER_C_PQ_TOTAL
+}
+
+FEEDERS_FP_PATH = {
+    "FeederA" : FEEDER_A_FP_TOTAL,
+    "FeederB" : FEEDER_B_FP_TOTAL,
+    "FeederC" : FEEDER_C_FP_TOTAL
+}
+
+FEEDERS_PQ1D_PATH = {
+    "FeederA" : FEEDER_A_PQ_1DIA,
+    "FeederB" : FEEDER_B_PQ_1DIA,
+    "FeederC" : FEEDER_C_PQ_1DIA
+}
+
+FEEDERS_FP1D_PATH = {
+    "FeederA" : FEEDER_A_FP_1DIA,
+    "FeederB" : FEEDER_B_FP_1DIA,
+    "FeederC" : FEEDER_C_FP_1DIA
+}
 
 
-# DSS
-DSS_DIR = BASE_DIR / "dss"
-LS_DIR = DSS_DIR / "loadshapes"
-LOADS_DIR = DSS_DIR / "loads"
+# INPUTS
+INPUTS_DIR = RAIZ_DIR / "dados" / "inputs"
+BASE_LOAD = INPUTS_DIR / "carga_base"
 
+# INTERMEDIARIOS
+INTER_DIR = RAIZ_DIR / "dados" / "intermediarios"
+PQ_SISTEMA = INTER_DIR / "Nodal_PQ_processado.xlsx"
 
-# Resultados
-RESULTADOS_DIR = BASE_DIR / "resultados"
-FIG_DIR = RESULTADOS_DIR / "figuras"
-FIG_NPQ_DIR = FIG_DIR / "Nodal_P&Q_plots"
-CFG_LOADS = DADOS_DIR / "processados" / "configuracoes_dos_loads.xlsx"
-FIG_SIMU_DIR = RESULTADOS_DIR / "figuras_simulacao"
-
-# Relatorios
-LOGS_DIR = BASE_DIR / "relatorios"
-
-#caminho para dados climáticos
-CLIMATICOS_DIR = EXTERNOS_DIR / "climaticos"
