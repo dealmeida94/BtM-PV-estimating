@@ -1,5 +1,5 @@
 '''
-Realiza uma leitura da planilha "Nodal_P&Q_processados.xlsx", e gera
+Realiza uma leitura da planilha "Nodal_PQ_processados.xlsx", e gera
 arquivos loadshapes de potência ativa (P com valores em p.u (normalizado por unidade).
 
 Etapas do processo:
@@ -9,7 +9,9 @@ Etapas do processo:
     4. Realiza a normalização dos valores em cada bus
     5. Salva loadshapes em arquivos .txt
     6. Gera arquivos loadshapes.dss
-    7. Salva os valores bases em uma planilha .xlsx
+    7. Salva os valores bases em uma planilha .csv
+    
+@author: matheus
     
 '''
 

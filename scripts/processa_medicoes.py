@@ -38,6 +38,7 @@ DADOS DE SAÍDA:
     + breve relatório dos dados
     + gráficos
           
+@author: matheus
 """
 
 import pandas as pd

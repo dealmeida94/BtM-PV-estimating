@@ -22,7 +22,20 @@ MASTER_DSS_ORGINAL = EXT_DIR / "Master_Original.dss"
 # RELATÓRIOS
 LOGS_DIR = RAIZ_DIR / "logs"
 LOG_NODAL_PQ_txt = LOGS_DIR / "log_processamento_Nodal_PQ.txt"
-LOG_GERA_LS = LOGS_DIR / "log_gera_loadshapes"
+LOG_GERA_LS = LOGS_DIR / "log_gera_loadshapes.txt"
+LOG_GERA_LOAD = LOGS_DIR / "log_gera_load_dss.xlsx"
+
+# INPUTS
+INPUTS_DIR = RAIZ_DIR / "dados" / "inputs"
+BASE_LOAD = INPUTS_DIR / "carga_base"
+
+# INTERMEDIARIOS
+INTER_DIR = RAIZ_DIR / "dados" / "intermediarios"
+PQ_SISTEMA = INTER_DIR / "Nodal_PQ_processado.xlsx"
+CFG_LOAD = INTER_DIR / "configs_do_load.xlsx"
+
+# ELEMENTOS
+ELEM_DIR = RAIZ_DIR / "elementos_dss"
 
 # FIGURAS
 FIGS_DIR = RAIZ_DIR / "figuras"
@@ -74,11 +87,5 @@ FEEDERS_FP1D_PATH = {
 }
 
 
-# INPUTS
-INPUTS_DIR = RAIZ_DIR / "dados" / "inputs"
-BASE_LOAD = INPUTS_DIR / "carga_base"
 
-# INTERMEDIARIOS
-INTER_DIR = RAIZ_DIR / "dados" / "intermediarios"
-PQ_SISTEMA = INTER_DIR / "Nodal_PQ_processado.xlsx"
 
