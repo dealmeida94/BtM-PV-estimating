@@ -38,7 +38,7 @@ from collections import defaultdict
 from pathlib import Path
 from auxiliares import calc_tempo 
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(ROOT))
 
 import configs as cfg

@@ -49,7 +49,7 @@ import sys
 from pathlib import Path
 from datetime import datetime
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(ROOT))
 
 import configs as cfg

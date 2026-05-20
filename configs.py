@@ -24,6 +24,7 @@ LOGS_DIR = RAIZ_DIR / "logs"
 LOG_NODAL_PQ_txt = LOGS_DIR / "log_processamento_Nodal_PQ.txt"
 LOG_GERA_LS = LOGS_DIR / "log_gera_loadshapes.txt"
 LOG_GERA_LOAD = LOGS_DIR / "log_gera_load_dss.xlsx"
+LOG_MASTER = LOGS_DIR / "logs_gera_Masterdss.txt"
 
 # INPUTS
 INPUTS_DIR = RAIZ_DIR / "dados" / "inputs"
