@@ -158,7 +158,7 @@ if log_erros:
     print("\nArquivo 'Master_sem_PV.dss' não foi gerado.")
 
 else:
-    with open(cfg.BASE_LOAD / "Master.dss", "w") as f:
+    with open(cfg.BASE_LOAD / "Master_sem_PV.dss", "w") as f:
         f.writelines(novo_conteudo)
 
     print("\nTodos os elementos da rede foram encontrados.\n")
