@@ -33,10 +33,8 @@ BASE_LOAD = INPUTS_DIR / "carga_base"
 # OUTPUTS
 OUTPUTS_DIR = RAIZ_DIR / "dados" / "outputs"
 OUT_BASE = OUTPUTS_DIR / "carga_base"
-P_BARRAS = OUT_BASE / "potencias_barras.parquet"
-V_BARRAS = OUT_BASE / "tensoes_barras.parquet"
-I_ELEM = OUT_BASE / "correntes_elementos.parquet"
-FP_GERAL = OUT_BASE / "fator_potencia.parquet"
+RESULTADOS_BASE = OUT_BASE / "resultados_sem_PV.parquet"
+
 
 # INTERMEDIARIOS
 INTER_DIR = RAIZ_DIR / "dados" / "intermediarios"
