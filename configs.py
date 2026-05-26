@@ -93,6 +93,11 @@ FEEDERS_FP1D_PATH = {
     "FeederC" : FEEDER_C_FP_1DIA
 }
 
-
+#Execução
+# Baseload
+FIGS_BS_DIR = FIGS_DIR / "base-load"
+BS_PQ_SUBESTACAO = FIGS_BS_DIR / "PeQ_subestacao_baseload.png" 
+BS_FP_SUBESTACAO = FIGS_BS_DIR / "FP_subestacao_baseload.png"
+BS_V_SUBESTACAO = FIGS_BS_DIR / "V_subestacao_baseload.png"
 
 

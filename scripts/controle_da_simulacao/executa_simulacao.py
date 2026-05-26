@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu May 21 15:28:23 2026
 
-@author: matheus
 """
 
 import opendssdirect as dss
@@ -156,9 +154,9 @@ for h in range(horas):
 # ============================================================
 # SALVA DATAFRAMES COM RESULTADOS
 # Estrutura:
-    # - hora: índice temporal (0 até HORAS-1)
-    # - P_kW: potência ativa total na subestação (sinal conforme OpenDSS)
-    # - Q_kvar: potência reativa total
+    # - hora: de 0 até "horas"-1)
+    # - P_kW: potência ativa na subestação (sinal +/- conforme OpenDSS)
+    # - Q_kvar: potência reativa total (sinal +/- conforme OpenDSS)
     # - FP: fator de potência na subestação
     # - Vmin_pu: menor tensão do sistema (pu)
     # - Vmax_pu: maior tensão do sistema (pu)
@@ -175,39 +173,42 @@ df = pd.DataFrame({
 df.to_parquet(cfg.RESULTADOS_BASE, index=False)
 
 # ============================================================
-# PLOTS
+# PLOTA GRÁFICOS
+# Potência
+plt.figure(figsize=(10,5))
+plt.plot(df["hora"], df["P_kW"], label="P (kW)")
+plt.plot(df["hora"], df["Q_kvar"], label="Q (kvar)")
+plt.legend()
+plt.title("Potências na subestação")
+plt.xlabel("Hora")
+plt.grid()
+plt.savefig(cfg.BS_PQ_SUBESTACAO)
+plt.show()
+
+# Fator de potência
+plt.figure(figsize=(10,4))
+plt.plot(df["hora"], df["FP"])
+plt.title("Fator de Potência na Subestação")
+plt.xlabel("Hora")
+plt.ylabel("FP")
+plt.grid()
+plt.savefig(cfg.BS_FP_SUBESTACAO)
+plt.show()
+
+# Tensões
+plt.figure(figsize=(10,4))
+plt.plot(df["hora"], df["Vmin_pu"], label="Vmin")
+plt.plot(df["hora"], df["Vmax_pu"], label="Vmax")
+plt.legend()
+plt.title("Faixa de Tensão")
+plt.xlabel("Hora")
+plt.ylabel("pu")
+plt.grid()
+plt.savefig(cfg.BS_V_SUBESTACAO)
+plt.show()
+
 # ============================================================
-
-# # Potência
-# plt.figure(figsize=(10,5))
-# plt.plot(df["hora"], df["P_kW"], label="P (kW)")
-# plt.plot(df["hora"], df["Q_kvar"], label="Q (kvar)")
-# plt.legend()
-# plt.title("Potência Total do Sistema")
-# plt.xlabel("Hora")
-# plt.grid()
-# plt.show()
-
-# # Fator de potência
-# plt.figure(figsize=(10,4))
-# plt.plot(df["hora"], df["FP"])
-# plt.title("Fator de Potência da Subestação")
-# plt.xlabel("Hora")
-# plt.ylabel("FP")
-# plt.grid()
-# plt.show()
-
-# # Tensões
-# plt.figure(figsize=(10,4))
-# plt.plot(df["hora"], df["Vmin_pu"], label="Vmin")
-# plt.plot(df["hora"], df["Vmax_pu"], label="Vmax")
-# plt.legend()
-# plt.title("Faixa de Tensão")
-# plt.xlabel("Hora")
-# plt.ylabel("pu")
-# plt.grid()
-# plt.show()
-
+# FIM
 # End Timer
 end_timer = time.perf_counter()
 tempo_execucao = calc_tempo(begin_timer, end_timer)
