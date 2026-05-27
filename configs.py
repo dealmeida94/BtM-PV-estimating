@@ -15,7 +15,7 @@ RAIZ_DIR = Path(__file__).resolve().parent
 # DADOS EXTERNOS
 EXT_DIR = RAIZ_DIR / "dados" / "externos"
 NODAL_PQ = EXT_DIR / "Calculated Nodal P&Q.xlsx"
-CLIMA = EXT_DIR / "estacao_INMET_A853_cruz_alta.csv"
+DADOS_CLIMA = EXT_DIR / "estacao_INMET_A853_cruz_alta.csv"
 LOAD_DSS_ORIGINAL = EXT_DIR / "Load_Original.dss"
 MASTER_DSS_ORGINAL = EXT_DIR / "Master_Original.dss"
 
@@ -25,6 +25,7 @@ LOG_NODAL_PQ_txt = LOGS_DIR / "log_processamento_Nodal_PQ.txt"
 LOG_GERA_LS = LOGS_DIR / "log_gera_loadshapes.txt"
 LOG_GERA_LOAD = LOGS_DIR / "log_gera_load_dss.xlsx"
 LOG_MASTER = LOGS_DIR / "logs_gera_Masterdss.txt"
+LOG_CLIMA = LOGS_DIR / "logs_processamento-dados-climaticos.txt"
 
 # INPUTS
 INPUTS_DIR = RAIZ_DIR / "dados" / "inputs"

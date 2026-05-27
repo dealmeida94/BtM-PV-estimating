@@ -104,6 +104,8 @@ buscoords_caminho = cfg.ELEM_DIR / "Buscoords.dss"
 if not os.path.exists(buscoords_caminho):
     log_erros.append("Arquivo Buscoords.dss não encontrado.")
 
+#=========================================================================
+# ESTRUTURA DO ARQUIVO
 # Cabeçalho
 novo_conteudo.append("// This is the OpenDSS Master file to solve the test system time-series power flow using loadshapes.\n\n")
 novo_conteudo.append("Clear\n")
@@ -132,14 +134,17 @@ redirects_ld, erros_ld = gerar_redirects_simples(loads)
 novo_conteudo.extend(redirects_ld)
 log_erros.extend(erros_ld)
 
-# Cálculo
+# PARÂMETROS
 novo_conteudo.append("\n\n\n!--------------------------Calculate---------------------!\n")
 novo_conteudo.append('Set VoltageBases = "69.0, 13.8, 0.208"\n')
 novo_conteudo.append("CalcVoltageBases\n") 
 novo_conteudo.append("solve\n")
 
-# BusCoords com caminho completo (ROBUSTO)
+# BUSCOORDS
 novo_conteudo.append(f'BusCoords "{buscoords_caminho}"\n\n')
+
+#=========================================================================
+# FIM DO ARQUIVO
 
 # Salva relatório
 with open(cfg.LOG_MASTER, "w") as log:
@@ -150,7 +155,7 @@ with open(cfg.LOG_MASTER, "w") as log:
     else:
         log.write("Todos os arquivos foram encontrados. Nenhum erro.\n")
 
-# Controle de geração
+# Print relatório
 if log_erros:
     print("\nERRO !!!:\n")
     for erro in log_erros:
@@ -160,6 +165,5 @@ if log_erros:
 else:
     with open(cfg.BASE_LOAD / "Master_sem_PV.dss", "w") as f:
         f.writelines(novo_conteudo)
-
     print("\nTodos os elementos da rede foram encontrados.\n")
     print(f"O arquivo 'Master_sem_PV.dss' foi salvo em: {cfg.BASE_LOAD}")

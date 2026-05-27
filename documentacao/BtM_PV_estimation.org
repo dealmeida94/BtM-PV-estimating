@@ -3,7 +3,12 @@
 1. processa_medicoes.py
    2. gera_loadshapes.py
       3. extrai_dados_Loaddss_original.py
-	 4. gera_arquivo_Load_dss.py 
+	 4. gera_arquivo_Load_dss.py
+	    5. gera_master_dss.py
+
+
+** Execução
+1. =executa_simulacao.py=
 
 * Descrição dos scripts
 
@@ -85,7 +90,8 @@ OUTPUTS:
 	+ arquivo Loadshapes.dss para cada Feeder. Padrão do nome do arquivo: Loadshapes_FeederX | Ex.: Loadshapes_FeederA.dss
 	+ arquivo .csv contendo os valores de base adotados. Padrão do nome do arquivo: Valores_de_Base_FeederX.csv | Ex.: Valores_de_Base_FeederA.csv
 	+ relatório: log_gera_loadshapes.txt
-	
+	  
+
 ** extrai_dados_Loaddss_original.py
 
 O arquivo Load.dss original considera cargas estática e, portanto, é necessario a crição
@@ -119,6 +125,42 @@ OUTPUTS:
     - Relatório com inconsistências em .xlsx.
 
 
+** gera_master_dss.py
+Tendo por base o arquivo Master.dss original, produz um novo arquivo Master
+considerando os loadshapes gerados para cada load.
+
+O script realiza uma varredura nos diretórios apontados, verifica a existência dos arquivos .dss que descrevem os
+diversos elementos que compõem o sistema, e gera os "Redirects"
+
++ INPUTS:
+  - endereços para diretório que contém os elementos do sistema;
+  - endereços para diretório contendo loads e loadshapes
+
++ OUTPUTS:
+  - arquivo "Master_sem_PV.dss"
+  - relatório.
+
+
+
+** =executa_simulacao.py=
+Executa a simulação do sistema de distribuição no OpenDSS utilizando o arquivo ="Master_sem_PV.dss"= gerado na ultima etapa do préprocessamento.
+
+A cada passo de simulação, cada carga recebe um fator de potência (FP) aleatório, dentro de um intervalo limite pré-definido, e então o
+fluxo de potência é resolvido.
+
+Ao fim, os resultados são armazenados em arquivos .parquet.
+
++ INPUTS:
+  - arquivo ="Master_sem_PV.dss"=
+
+
++ OUTPUTS:
+  - Arquivo ="resultados_sem_PV.parquet"=
+  - Gráficos:
+    > Potência ativa e reativa na subestação : ="PeQ_subestacao_baseload.png"=
+    > Fator de Potência na subestação : = ="FP_subestacao_baseload.png"=
+    > Tensões mínimas e máximas em pu na subestação : ="V_subestacao_baseload.png"=
+
 * Guia Inputs e Outputs das funções
 
 ** processa_medicoes.py
@@ -150,6 +192,25 @@ OUTPUTS:
 | gera_arquivo_Load_dss.py | 'configs_do_load.xlsx'                | 'Loads_Feeder{nome feeder}.dss' |
 |                          | 'Valores_de_Base_Feeder{nome feeder}' | 'log_gera_load_dss.xlsx'        |
 |                          | 'Loadshapes_Feeder{nome feeder}'      |                                 |
+
+** gera_master_dss.py
+
+| Função             | Inputs                   | Outputs                   |
+|--------------------+--------------------------+---------------------------|
+| gera_master_dss.py | endereços:               | 'Master_sem_PV.dss'       |
+|                    | diretórios com elementos | 'logs_gera_Masterdss.txt' |
+|                    | diretório com loads      |                           |
+|                    | diretório com loadshapes |                           |
+
+** =executa_simulacao.py=
+
+| Função                | Inputs                | Outputs                        |                                 |
+|-----------------------+-----------------------+--------------------------------+---------------------------------|
+| =executa_simulacao.py | ="Master_sem_PV.dss"= | 'resultados_sem_PV.parquet'    |                                 |
+|                       |                       | 'logs_gera_Masterdss.txt'      | ="PeQ_subestacao_baseload.png"= |
+|                       |                       | ="FP_subestacao_baseload.png"= |                                 |
+|                       |                       |                                | ="V_subestacao_baseload.png"=   |
+|                       |                       |                                |                                 |
 
 
 

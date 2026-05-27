@@ -1,0 +1,25 @@
+===== ANALISE DOS DADOS =====
+
+Numero de linhas: 8760
+
+NaN antes do tratamento:
+temperatura            1
+irradiancia_W_m2    3264
+dtype: int64
+
+NaN depois do tratamento:
+temperatura         0
+irradiancia_W_m2    4
+dtype: int64
+
+Irradiancia:
+Min: 0.00 W/m2
+Max: 1184.00 W/m2
+
+Temperatura:
+Min: -2.90 °C
+Max: 35.00 °C
+
+Horario medio:
+Nascer do sol: 01:29
+Por do sol: 21:53
